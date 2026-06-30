@@ -31,6 +31,8 @@ The software is divided into two distinct subsystems operating over an asynchron
 *   **Computer Vision Pipeline (Python + OpenCV):** Utilizes `cv2.createBackgroundSubtractorMOG2` to strip static environments and isolate structural motion contours . A Histogram of Oriented Gradients (`HOGDescriptor`) person detector differentiates human actors from random debris . Horizontal delta displacements exceeding a configurable pixel threshold trigger immediate non-blocking haptic pulse commands (`lra1` / `lra2`) to the ESP32 .
 *   **Firmware Control Layer (ESP32 C++):** Loops natively on `checkMotion()` . If the mmWave pin reads `LOW`, all peripherals and motors are completely shut down . When active, `processTOFDistance()` evaluates real-time millimeter arrays every 300ms . If the spatial derivative is `< -100mm`, LRA 3 is driven; if `> 100mm`, LRA 4 is engaged .
 
+![alt text](img2.png)
+
 ---
 
 ##  Phase 2: Gesture-to-Speech Smart Glove
@@ -46,7 +48,7 @@ The glove's central processing unit is an **ESP32** utilizing `BluetoothSerial` 
 | **Flex Sensor 2** | Analog | `GPIO 35` | Tracks index finger flexion . |
 | **MPU6050** | IMU (I2C at `0x68`) | `SDA: 21`, `SCL: 22` | Captures 3D spatial orientation (Pitch/Roll) via G-force calculations . |
 
-> **Note:** Refer to the images in the `Phase_2_Guesture_Glove/` directory for physical breadboard mounting.
+> **Note:** Refer to the images in the `Phase_2_Gesture_Glove/` directory for physical breadboard mounting.
 
 ###  Software Implementation & Logic Flow
 The firmware is written in C++ and focuses on real-time data fusion, debouncing, and user calibration . 
@@ -54,6 +56,10 @@ The firmware is written in C++ and focuses on real-time data fusion, debouncing,
 *   **Smart Calibration Routine:** The system features a 5-step calibration sequence (Neutral, Flex Closed, Tilt Right, Tilt Up) that calculates perfect midpoint thresholds for the user's specific hand size and stores them permanently using the ESP32 `Preferences` library .
 *   **Sensor Fusion Logic:** Gestures are evaluated by combining binary flex states (Bent/Open) with IMU Pitch/Roll thresholds . Pitching the hand "Up" while the thumb is "Bent" triggers *"What is in dinner today?"*, whereas closing both fingers triggers a priority *"Help"* command .
 *   **Anti-Spam Cooldown:** To ensure natural speech pacing on the receiving Android app, a strict `2200ms` non-blocking timer (`millis()`) prevents the continuous broadcasting of identical gestures . 
+
+
+![alt text](img1.jpeg)
+
 
 
 ##  Acknowledgements & Team
@@ -81,7 +87,7 @@ The firmware is written in C++ and focuses on real-time data fusion, debouncing,
     │   ├── img1.png
     │   ├── img2.png
     │   └── img3.jpg
-    ├── 📁Phase_2_Guesture_Glove
+    ├── 📁Phase_2_Gesture_Glove
     │   ├── 📁Android_App
     │   │   └── GestureGlove.apk
     │   ├── 📁ESP_32_Firmware
